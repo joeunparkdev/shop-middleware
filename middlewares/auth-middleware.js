@@ -4,7 +4,6 @@ const User = require("../models/user");
 module.exports = (req, res, next) => {
   const { authorization } = req.headers;
   const [authType, authToken] = (authorization || "").split(" ");
- console.log(authorization);
   if (!authToken || authType !== "Bearer") {
     res.status(401).send({
       errorMessage: "로그인 후 이용 가능한 기능입니다.",
