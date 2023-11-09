@@ -29,50 +29,26 @@ function postOrder(user, order) {
 }
 
 function getSelf(callback) {
-  // 1. 로컬 스토리지에서 토큰 가져오기
-  const token = localStorage.getItem("token");
-
-  // 2. 토큰이 없을 경우 로그인 필요 알림 등의 처리
-  if (!token) {
-    alert("로그인이 필요합니다.");
-    window.location.href = "/"; // 로그인 페이지로 이동
-    return;
-  }
-
-  // 3. 서버에 사용자 정보 요청
   $.ajax({
     type: "GET",
     url: "/api/users/me",
     headers: {
-      authorization: `Bearer ${token}`,
+      authorization: `Bearer ${localStorage.getItem("token")}`,
     },
     success: function (response) {
-      // 4. 성공적으로 사용자 정보를 받아왔을 때
-      console.log("성공 응답:", response);
       callback(response.user);
     },
     error: function (xhr, status, error) {
-      // 5. 서버 응답에서 에러가 발생한 경우
-      console.error("에러:", xhr, status, error);
-
       if (status == 401) {
-        // 6. 토큰이 만료되었을 경우 로그인 필요 알림 등의 처리
         alert("로그인이 필요합니다.");
-      } 
-      if (status == 404) {
-        // 7. 그 외의 에러인 경우
-        //localStorage.clear();
-        console.log(error);
+      } else {
+        localStorage.clear();
         alert("알 수 없는 문제가 발생했습니다. 관리자에게 문의하세요.");
       }
-
-      // 8. 로그인 페이지로 리다이렉트
       window.location.href = "/";
     },
   });
 }
-
-
 
 function getGoods(category, callback) {
   $("#goodsList").empty();
